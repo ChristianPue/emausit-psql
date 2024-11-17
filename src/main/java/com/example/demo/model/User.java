@@ -31,10 +31,10 @@ public class User {
     public User() {}
 
     // Constructor con parámetros
-    public User(String email, Integer id, String name, String password, String type_account, String username) {
-        this.email = email;
+    public User(Integer id, String name, String username, String email, String password, String type_account) {
         this.id = id;
         this.name = name;
+        this.email = email;
         this.password = password;
         this.type_account = type_account;
         this.username = username;

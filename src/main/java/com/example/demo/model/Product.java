@@ -18,8 +18,8 @@ public class Product {
     private String name;
     private String description;
     private String image;
-    private double precio;
-    private int cantidad;
+    private double price;
+    private int quantity;
 
     // Foreign Keys
     @ManyToOne
@@ -29,13 +29,13 @@ public class Product {
     public Product() {}
 
     // Constructor con parámetros
-    public Product(Integer id, String image, String name, double precio, int cantidad, String description, User user) {
+    public Product(Integer id, String name, String description, int quantity, double price, String image, User user) {
         this.id = id;
-        this.image = image;
         this.name = name;
-        this.precio = precio;
-        this.cantidad = cantidad;
         this.description = description;
+        this.quantity = quantity;
+        this.price = price;
+        this.image = image;
         this.user = user;
     }
 
@@ -72,20 +72,20 @@ public class Product {
         this.image = image;
     }
 
-    public double getPrecio() {
-        return precio;
+    public double getPrice() {
+        return price;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public int getCantidad() {
-        return cantidad;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public User getUser() {
@@ -105,8 +105,8 @@ public class Product {
         sb.append(", name=").append(name);
         sb.append(", description=").append(description);
         sb.append(", image=").append(image);
-        sb.append(", precio=").append(precio);
-        sb.append(", cantidad=").append(cantidad);
+        sb.append(", precio=").append(price);
+        sb.append(", cantidad=").append(quantity);
         sb.append(", user=").append(user);
         sb.append('}');
         return sb.toString();
