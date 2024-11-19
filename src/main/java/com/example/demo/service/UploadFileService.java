@@ -32,4 +32,12 @@ public class UploadFileService {
         File file = new File(path + name);
         file.delete();
     }
+
+    // Otros métodos
+    public String saveCompressedImage(byte[] compressedImage, String originalFilename) throws IOException {
+        String compressedImageName = "compressed_" + originalFilename;
+        File file = new File(folder + compressedImageName); // Cambia a tu ruta
+        Files.write(file.toPath(), compressedImage);
+        return compressedImageName;
+    }
 }
