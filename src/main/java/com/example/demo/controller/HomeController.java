@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/")
 public class HomeController 
 {
     private final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
@@ -48,7 +49,7 @@ public class HomeController
         Optional<Product> optProduct = productService.get(id);
         Product product = optProduct.get();
 
-        model.addAttribute("producto", product);
+        model.addAttribute("product", product);
         
         return "user/producthome";
     }
@@ -58,10 +59,9 @@ public class HomeController
     {
         OrderDetail orderDetail = new OrderDetail();
 
-        double total = 0;
         Optional<Product> optProduct = productService.get(id);
-        LOGGER.info("Producto añadido: {}", optProduct);
-        LOGGER.info("Cantidad: {}", quantity);
+        //LOGGER.info("Producto añadido: {}", optProduct.get());
+        //LOGGER.info("Cantidad: {}", quantity);
 
         Product product = optProduct.get();
 
@@ -69,13 +69,57 @@ public class HomeController
         orderDetail.setQuantity(quantity);
         orderDetail.setPrice(product.getPrice());
         orderDetail.setTotalPrice(product.getPrice() * quantity);
+        
         orderDetail.setProduct(product);
 
-        total = orderdetails.stream().mapToDouble(dt -> dt.getTotalPrice()).sum();
+        // Validación: Evitar repetir dos productos
+        Integer idProduct = product.getId();
+        boolean pass = orderdetails.stream().anyMatch(dt -> Objects.equals(dt.getProduct().getId(), idProduct));
+
+        if (!pass)
+        {
+            orderdetails.add(orderDetail);
+        }
+
+        double total = orderdetails.stream().mapToDouble(dt -> dt.getTotalPrice()).sum();
 
         order.setTotalPrice(total);
         model.addAttribute("cart", orderdetails);
-        model.addAttribute("orden", order);
+        model.addAttribute("dorder", order);
+
+        return "user/cart";
+    }
+
+    @GetMapping("/delete/cart/{id}")
+    public String deleteProductCart(@PathVariable Integer id, Model model)
+    {
+        List<OrderDetail> news = new ArrayList<>();
+
+        for (OrderDetail orderDetail: orderdetails)
+        {
+            if (!Objects.equals(orderDetail.getProduct().getId(), id))
+            {
+                news.add(orderDetail);
+            }
+        }
+
+        orderdetails = news;
+
+        double total = orderdetails.stream().mapToDouble(dt -> dt.getTotalPrice()).sum();
+
+        order.setTotalPrice(total);
+
+        model.addAttribute("cart", orderdetails);
+        model.addAttribute("dorder", order);
+
+        return "user/cart";
+    }
+
+    @GetMapping("/getCart")
+    public String getCart(Model model)
+    {
+        model.addAttribute("cart", orderdetails);
+        model.addAttribute("dorder", order);
 
         return "user/cart";
     }
